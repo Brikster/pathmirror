@@ -1,0 +1,4 @@
+mirrors:
+  - package: 'me.badbones69.crazycrates.'
+    from: 'plugins/CrazyCrates/data.yml'
+    to: 'crazycrates.yml'
