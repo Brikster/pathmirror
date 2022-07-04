@@ -2,9 +2,7 @@ package ru.brikster.pathmirror;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.agent.builder.AgentBuilder.Default;
 import net.bytebuddy.agent.builder.AgentBuilder.Listener.StreamWriting;
 import net.bytebuddy.agent.builder.AgentBuilder.Listener.WithErrorsOnly;
 import net.bytebuddy.agent.builder.AgentBuilder.LocationStrategy;
@@ -34,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
@@ -44,10 +43,9 @@ public class PathMirrorAgent {
     private static PathMirrorConfig config;
 
     public static void premain(String args, Instrumentation instrumentation) throws Throwable {
-        ByteBuddyAgent.install();
         System.out.println("[PathMirror] PathMirror initialized.");
         loadConfig();
-        installTransformers();
+        installTransformers(instrumentation);
     }
 
     public static PathMirrorConfig getConfig() {
@@ -66,13 +64,13 @@ public class PathMirrorAgent {
         PathMirrorAgent.config = mapper.readValue(new FileReader("pathmirror.yml"), PathMirrorConfig.class);
     }
 
-    private static void installTransformers() throws NoSuchMethodException {
+    private static void installTransformers(Instrumentation instrumentation) throws NoSuchMethodException {
         Method stringMethod = PathMirrorFileFactory.class.getMethod("createFile", String.class);
         Method stringStringMethod = PathMirrorFileFactory.class.getMethod("createFile", String.class, String.class);
         Method fileStringMethod = PathMirrorFileFactory.class.getMethod("createFile", File.class, String.class);
         Method forNameMethod = PathMirrorFileFactory.class.getMethod("forName", String.class, boolean.class, ClassLoader.class);
 
-        new Default()
+        new AgentBuilder.Default()
                 .with(new Compound(
                         new Simple(ForClassLoader.ofPlatformLoader()),
                         new Simple(ForClassLoader.ofBootLoader()),
@@ -88,14 +86,14 @@ public class PathMirrorAgent {
                                 .on(ElementMatchers.isConstructor())))
                 .with(RedefinitionStrategy.RETRANSFORMATION)
                 .with(new WithErrorsOnly(StreamWriting.toSystemError()))
-                .installOnByteBuddyAgent();
+                .installOn(instrumentation);
 
         Junction<NamedElement> typeMatcher = null;
         for (Junction<NamedElement> matcher : config.getMirrors()
                 .stream()
                 .map(PathMirror::getPackage)
                 .map(ElementMatchers::nameStartsWith)
-                .toList()) {
+                .collect(Collectors.toList())) {
             if (typeMatcher == null) {
                 typeMatcher = matcher;
             } else {
@@ -134,7 +132,7 @@ public class PathMirrorAgent {
                         .replaceWith(stringStringMethod)
                         .on(any())))
                 .with(TypeStrategy.Default.REDEFINE)
-                .installOnByteBuddyAgent();
+                .installOn(instrumentation);
 
     }
 

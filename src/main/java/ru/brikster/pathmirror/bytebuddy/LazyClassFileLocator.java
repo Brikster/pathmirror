@@ -1,6 +1,5 @@
 package ru.brikster.pathmirror.bytebuddy;
 
-import net.bytebuddy.agent.utility.nullability.MaybeNull;
 import net.bytebuddy.dynamic.ClassFileLocator;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class LazyClassFileLocator implements ClassFileLocator {
         this.classLoader = classLoader;
     }
 
-    public static ClassFileLocator of(@MaybeNull Supplier<List<ClassLoader>> classLoaders) {
+    public static ClassFileLocator of(Supplier<List<ClassLoader>> classLoaders) {
         return new LazyClassFileLocator(classLoaders);
     }
 

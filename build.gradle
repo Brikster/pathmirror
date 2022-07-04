@@ -46,10 +46,9 @@ dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT'
 
     implementation 'net.bytebuddy:byte-buddy:1.12.12'
-    implementation 'net.bytebuddy:byte-buddy-agent:1.12.12'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3'
 }
 
-sourceCompatibility = sourceCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = sourceCompatibility = JavaVersion.VERSION_11
