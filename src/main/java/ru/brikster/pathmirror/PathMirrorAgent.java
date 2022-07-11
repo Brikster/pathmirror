@@ -2,6 +2,10 @@ package ru.brikster.pathmirror;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import ru.brikster.pathmirror.bytebuddy.LazyClassFileLocator;
+import ru.brikster.pathmirror.config.PathMirrorConfig;
+import ru.brikster.pathmirror.config.PathMirrorConfig.PathMirror;
+import ru.brikster.pathmirror.factory.PathMirrorFileFactory;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.AgentBuilder.Listener.StreamWriting;
 import net.bytebuddy.agent.builder.AgentBuilder.Listener.WithErrorsOnly;
@@ -17,10 +21,6 @@ import net.bytebuddy.dynamic.ClassFileLocator.ForClassLoader;
 import net.bytebuddy.matcher.ElementMatcher.Junction;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import ru.brikster.pathmirror.bytebuddy.LazyClassFileLocator;
-import ru.brikster.pathmirror.config.PathMirrorConfig;
-import ru.brikster.pathmirror.config.PathMirrorConfig.PathMirror;
-import ru.brikster.pathmirror.factory.PathMirrorFileFactory;
 import ru.brikster.pathmirror.util.ConfigUtil;
 
 import java.io.File;

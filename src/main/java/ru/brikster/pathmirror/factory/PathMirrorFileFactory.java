@@ -1,7 +1,7 @@
 package ru.brikster.pathmirror.factory;
 
-import ru.brikster.pathmirror.PathMirrorAgent;
 import ru.brikster.pathmirror.config.PathMirrorConfig.PathMirror;
+import ru.brikster.pathmirror.PathMirrorAgent;
 
 import java.io.File;
 
